@@ -1,0 +1,1247 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>全能口算PK练习器｜卡通版</title>
+<style>
+:root {
+  --bg: linear-gradient(135deg,#e0f7ff 0%,#fff5d6 50%,#ffe8f5 100%);
+  --card: rgba(255,255,255,0.92);
+  --text: #333344;
+  --primary: #4f8cff;
+  --primary-2: #ffb347;
+  --pink: #ff7ab6;
+  --green: #51cf66;
+  --red: #ff6b6b;
+  --warn: #ffd43b;
+  --border: #ffe0f1;
+  --shadow: 0 8px 20px rgba(255, 182, 193, 0.35);
+  --font-base: 16px;
+}
+
+.dark {
+  --bg: linear-gradient(135deg,#1b2547 0%,#2a1b47 50%,#1b3a47 100%);
+  --card: rgba(30,42,74,0.92);
+  --text: #e6f1ff;
+  --border: #4a5f9f;
+  --shadow: 0 8px 20px rgba(0,0,0,0.35);
+}
+
+.font-big { --font-base: 20px; }
+
+.cute-border .item {
+  border: 3px dashed #ffb3d1 !important;
+  border-radius: 22px !important;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: "Comic Sans MS", "Microsoft YaHei", system-ui, sans-serif;
+  font-size: var(--font-base);
+  color: var(--text);
+}
+
+body {
+  background: var(--bg);
+  background-attachment: fixed;
+  min-height: 100vh;
+  padding: 18px;
+  transition: 0.3s;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+}
+
+/* 顶部小助手 */
+.helper-banner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: var(--card);
+  border: 3px solid #ffd6ef;
+  border-radius: 24px;
+  padding: 14px 18px;
+  box-shadow: var(--shadow);
+  margin-bottom: 14px;
+}
+
+.helper-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  border: 3px solid #fff;
+  background: linear-gradient(135deg,#ffd6ef,#d6ecff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  box-shadow: 0 6px 14px rgba(255,150,200,0.4);
+}
+
+.helper-text h2 {
+  font-size: 22px;
+  color: #ff5ca8;
+  margin-bottom: 4px;
+}
+
+.helper-text p {
+  font-size: 14px;
+  color: #667;
+}
+
+.dark .helper-text p { color: #c9d6ff; }
+
+h1 {
+  text-align: center;
+  font-size: 30px;
+  color: #4f8cff;
+  text-shadow: 2px 2px 0 #fff, 4px 4px 0 rgba(255,179,71,0.4);
+  margin-bottom: 16px;
+  letter-spacing: 1px;
+}
+
+.panel {
+  background: var(--card);
+  border: 3px solid var(--border);
+  border-radius: 24px;
+  padding: 18px;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow);
+}
+
+.row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.cfg-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 8px;
+  margin: 12px 0;
+}
+
+label {
+  font-weight: 700;
+  color: #4f8cff;
+}
+
+.dark label { color: #a9c4ff; }
+
+input, select {
+  border: 2px solid #ffd6ef;
+  border-radius: 14px;
+  padding: 8px 10px;
+  background: #fff;
+  color: #333;
+  outline: none;
+  transition: 0.2s;
+}
+
+.dark input, .dark select {
+  background: #2c3a66;
+  color: #e6f1ff;
+  border-color: #4a5f9f;
+}
+
+input:focus, select:focus {
+  border-color: #ff7ab6;
+  box-shadow: 0 0 0 3px rgba(255,122,182,0.25);
+}
+
+button {
+  border: none;
+  border-radius: 16px;
+  padding: 10px 14px;
+  font-weight: 800;
+  color: #fff;
+  cursor: pointer;
+  transition: 0.2s;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.12);
+}
+
+button:hover { transform: translateY(-2px); }
+button:active { transform: translateY(1px); }
+
+.btn-primary { background: linear-gradient(135deg,#4f8cff,#7aa8ff); }
+.btn-pink { background: linear-gradient(135deg,#ff7ab6,#ffb1d6); }
+.btn-orange { background: linear-gradient(135deg,#ffb347,#ffd180); }
+.btn-green { background: linear-gradient(135deg,#51cf66,#9be395); }
+.btn-red { background: linear-gradient(135deg,#ff6b6b,#ffa1a1); }
+.btn-purple { background: linear-gradient(135deg,#a78bfa,#d4b8ff); }
+
+/* 题目区 */
+#questionBox {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 14px;
+  margin-top: 12px;
+}
+
+.item {
+  background: linear-gradient(135deg,#fff7fb,#eaf4ff);
+  border: 3px solid #ffd6ef;
+  border-radius: 22px;
+  padding: 14px;
+  font-size: 20px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  box-shadow: 0 6px 14px rgba(255,182,193,0.25);
+  position: relative;
+}
+
+.dark .item {
+  background: linear-gradient(135deg,#2c3a66,#3b4c8c);
+  border-color: #4a5f9f;
+}
+
+.item input {
+  width: 90px;
+  font-size: 20px;
+  text-align: center;
+  font-weight: 800;
+}
+
+.ok {
+  color: #51cf66;
+  font-size: 22px;
+  font-weight: 900;
+}
+
+.err {
+  color: #ff6b6b;
+  font-size: 22px;
+  font-weight: 900;
+}
+
+.skip {
+  color: #ffb347;
+  font-size: 22px;
+  font-weight: 900;
+}
+
+.answer {
+  color: #51cf66;
+  font-weight: 800;
+  margin-left: auto;
+  display: none;
+}
+
+.answer.show { display: inline; }
+
+/* PK分栏 */
+.pk-wrap {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.pk-col {
+  background: var(--card);
+  border: 3px solid #ffd6ef;
+  border-radius: 24px;
+  padding: 14px;
+  box-shadow: var(--shadow);
+}
+
+.pk-col h3 {
+  text-align: center;
+  color: #ff5ca8;
+  font-size: 22px;
+  margin-bottom: 10px;
+}
+
+/* 弹窗 */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(20,30,60,0.55);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  backdrop-filter: blur(4px);
+}
+
+.modal.show { display: flex; }
+
+.modal-content {
+  background: #fff;
+  border-radius: 24px;
+  padding: 20px;
+  max-width: 600px;
+  width: 90%;
+  max-height: 80vh;
+  overflow: auto;
+  border: 4px solid #ffd6ef;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+}
+
+.modal-content h2 {
+  color: #4f8cff;
+  margin-bottom: 10px;
+}
+
+.close-btn {
+  float: right;
+  background: linear-gradient(135deg,#ff6b6b,#ffa1a1);
+}
+
+.ach-item {
+  padding: 10px;
+  border-bottom: 2px dashed #ffd6ef;
+  margin-bottom: 6px;
+}
+
+.ach-lock { opacity: 0.55; }
+.ach-unlock { color: #51cf66; font-weight: 800; }
+
+.shop-item {
+  padding: 10px;
+  margin: 6px 0;
+  border: 2px solid #ffd6ef;
+  border-radius: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #fff7fb;
+}
+
+.score-info {
+  font-size: 18px;
+  font-weight: 800;
+  color: #4f8cff;
+  background: #fff7fb;
+  border: 2px solid #ffd6ef;
+  border-radius: 16px;
+  padding: 10px 14px;
+  display: inline-block;
+}
+
+/* 打印 */
+@media print {
+  body { background: #fff; }
+  .helper-banner,
+  .panel,
+  .row,
+  .close-btn,
+  .modal,
+  .cfg-row,
+  .pk-control { display: none !important; }
+
+  #questionBox {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .item {
+    border: 2px solid #aaa;
+    box-shadow: none;
+    background: #fff;
+    page-break-inside: avoid;
+  }
+
+  .answer { display: none !important; }
+}
+
+@media (max-width: 768px) {
+  .pk-wrap { grid-template-columns: 1fr; }
+  h1 { font-size: 24px; }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- 顶部助手 -->
+  <div class="helper-banner">
+    <div class="helper-avatar">🧚‍♀️</div>
+    <div class="helper-text">
+      <h2>你好呀！我是口算精灵✨</h2>
+      <p>今天也要认真做题，争取拿到满分哦！加油！</p>
+    </div>
+  </div>
+
+  <h1>🧮 全能口算PK练习器 🎮</h1>
+
+  <div class="panel">
+    <div class="row">
+      <button class="btn-pink" id="themeBtn">🌙 深色模式</button>
+      <button class="btn-primary" id="genBtn">🎲 生成题目</button>
+      <button class="btn-orange" id="showAnsBtn">👀 显示答案</button>
+      <button class="btn-green" id="printBtn">🖨️ 打印试卷</button>
+      <button class="btn-purple" id="clearAnswerBtn">🧹 清空作答</button>
+      <button class="btn-red" id="resetBtn">🔄 全部重置</button>
+    </div>
+
+    <div class="row">
+      <button class="btn-orange" id="achBtn">🏆 成就商店</button>
+      <button class="btn-green" id="wrongBtn">📖 错题本</button>
+      <button class="btn-primary" id="historyBtn">📜 练习历史</button>
+    </div>
+
+    <div class="row">
+      <label>难度预设：</label>
+      <select id="preset">
+        <option value="custom">自定义</option>
+        <option value="g1">一年级｜20以内加减</option>
+        <option value="g2">二年级｜100以内+表内乘除</option>
+        <option value="g3">三年级｜有余数+括号</option>
+        <option value="g4">四年级｜分数小数混合</option>
+      </select>
+
+      <label>最大数值：</label>
+      <input type="number" id="maxNum" value="20" min="2">
+
+      <label>和上限：</label>
+      <input type="number" id="sumMax" value="999" min="1">
+
+      <label>积上限：</label>
+      <input type="number" id="mulMax" value="999" min="1">
+
+      <label>题目数量：</label>
+      <input type="number" id="count" value="20" min="1" max="100">
+
+      <label>限时(分钟)：</label>
+      <input type="number" id="timeLimit" value="0" min="0" max="60">
+    </div>
+
+    <div class="cfg-row">
+      <label class="check-label"><input type="checkbox" id="cfgMul"> ✖️ 启用乘法</label>
+      <label class="check-label"><input type="checkbox" id="cfgDiv"> ➗ 启用除法</label>
+      <label class="check-label"><input type="checkbox" id="cfgBracket"> 📐 允许括号</label>
+      <label class="check-label"><input type="checkbox" id="cfgSubNeg"> ➖ 减法允许负数</label>
+      <label class="check-label"><input type="checkbox" id="cfgDivRem"> 📦 除法允许余数</label>
+      <label class="check-label"><input type="checkbox" id="cfgFrac"> 🍰 启用分数</label>
+      <label class="check-label"><input type="checkbox" id="cfgDecimal"> 🔵 启用小数</label>
+      <label class="check-label"><input type="checkbox" id="cfgCmp"> 🎯 比较大小</label>
+      <label class="check-label"><input type="checkbox" id="cfgNoZero"> 🚫 过滤0算式</label>
+      <label class="check-label"><input type="checkbox" id="cfgTip"> 💡 做错提示</label>
+      <label class="check-label"><input type="checkbox" id="cfgPk"> 🎮 双人PK</label>
+    </div>
+
+    <div class="row pk-control" id="pkCfg" style="display:none">
+      <label>玩家A名字：<input id="p1name" value="玩家A"></label>
+      <label>玩家B名字：<input id="p2name" value="玩家B"></label>
+      <label>PK模式：</label>
+      <select id="pkMode">
+        <option value="speed">⚡竞速PK</option>
+        <option value="time">⏰限时PK</option>
+      </select>
+    </div>
+
+    <div class="row">
+      <div class="score-info">⏱️ 计时：<span id="time">00:00</span></div>
+      <button class="btn-green" id="startTimer">开始计时</button>
+      <div class="score-info" id="scoreText">等待生成题目...</div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div id="questionBox"></div>
+  </div>
+</div>
+
+<!-- 成就弹窗 -->
+<div class="modal" id="achModal">
+  <div class="modal-content">
+    <button class="close-btn" onclick="closeModal('achModal')">关闭</button>
+    <h2>🏆 成就商店｜星星：<span id="starCount">0</span></h2>
+    <div id="achList"></div>
+    <h3 style="margin-top:12px">✨ 商店</h3>
+    <div id="shopList"></div>
+    <button class="btn-red" style="margin-top:12px" onclick="resetAch()">重置星星成就</button>
+  </div>
+</div>
+
+<!-- 错题本弹窗 -->
+<div class="modal" id="wrongModal">
+  <div class="modal-content">
+    <button class="close-btn" onclick="closeModal('wrongModal')">关闭</button>
+    <h2>📖 错题本</h2>
+    <div id="wrongList"></div>
+    <button class="btn-green" style="margin-top:12px" onclick="genWrongPaper()">生成错题卷</button>
+    <button class="btn-red" style="margin-top:12px" onclick="clearWrong()">清空错题</button>
+  </div>
+</div>
+
+<!-- 历史弹窗 -->
+<div class="modal" id="historyModal">
+  <div class="modal-content">
+    <button class="close-btn" onclick="closeModal('historyModal')">关闭</button>
+    <h2>📜 练习历史</h2>
+    <div id="historyList"></div>
+    <button class="btn-red" style="margin-top:12px" onclick="clearHistory()">清空历史</button>
+  </div>
+</div>
+
+<!-- PK结算弹窗 -->
+<div class="modal" id="pkResultModal">
+  <div class="modal-content">
+    <h2>🎮 PK结算</h2>
+    <div id="pkResultText"></div>
+    <button class="btn-primary" style="margin-top:12px" onclick="closeModal('pkResultModal')">确定</button>
+  </div>
+</div>
+
+<script>
+const $ = s => document.querySelector(s);
+const $$ = s => document.querySelectorAll(s);
+
+let state = {
+  questionList: [],
+  p1: { ans: [], ok: [], finish: false, right: 0, wrong: 0, skip: 0 },
+  p2: { ans: [], ok: [], finish: false, right: 0, wrong: 0, skip: 0 },
+  showAnswer: false,
+  timerId: null,
+  startTime: null,
+  timeLimitTimer: null,
+  usedKeySet: new Set(),
+  isPk: false
+};
+
+let saveData = JSON.parse(localStorage.getItem("mathSave") || `{
+  "cfg":{"dark":false,"mul":false,"div":false,"bracket":false,"subNeg":false,"divRem":false,"frac":false,"decimal":false,"cmp":false,"noZero":false,"tip":false},
+  "wrong":[],
+  "history":[],
+  "star":0,
+  "ach":{},
+  "shop":{"bigFont":false,"cuteBorder":false,"lightTheme":false},
+  "pkWinStreak":0,"totalPractice":0,"totalRight":0,"totalWrongFix":0,
+  "tag":{"add":0,"sub":0,"mul":0,"div":0,"frac":0,"bracket":0,"decimal":0,"cmp":0}
+}`);
+
+const ACH_DEF = [
+  { id: "r10", name: "初出茅庐", desc: "累计答对10题", cond: () => saveData.totalRight >= 10 },
+  { id: "r50", name: "小算能手", desc: "累计答对50题", cond: () => saveData.totalRight >= 50 },
+  { id: "r200", name: "口算达人", desc: "累计答对200题", cond: () => saveData.totalRight >= 200 },
+  { id: "fullOnce", name: "百题满分", desc: "单次练习满分", cond: () => saveData.ach.fullOnce },
+  { id: "pkFirst", name: "对战新秀", desc: "完成第一次PK", cond: () => saveData.ach.pkFirst },
+  { id: "pk3win", name: "PK常胜", desc: "PK连胜3局", cond: () => saveData.pkWinStreak >= 3 },
+  { id: "fix20", name: "错题攻克", desc: "错题订正20题", cond: () => saveData.totalWrongFix >= 20 },
+  { id: "allType", name: "全能选手", desc: "加减乘除分数括号小数各5题", cond: () => {
+    const t = saveData.tag;
+    return t.add >= 5 && t.sub >= 5 && t.mul >= 5 && t.div >= 5 && t.frac >= 5 && t.bracket >= 5 && t.decimal >= 5;
+  }},
+  { id: "train20", name: "坚持不懈", desc: "累计20次练习", cond: () => saveData.totalPractice >= 20 }
+];
+
+const SHOP_DEF = [
+  { id: "bigFont", name: "护眼大字体", cost: 30 },
+  { id: "cuteBorder", name: "可爱卡通边框", cost: 50 },
+  { id: "lightTheme", name: "清新浅色主题", cost: 80 }
+];
+
+function save() {
+  localStorage.setItem("mathSave", JSON.stringify(saveData));
+}
+
+function closeModal(id) {
+  $("#" + id).classList.remove("show");
+}
+
+function openModal(id) {
+  $("#" + id).classList.add("show");
+}
+
+function rand(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function reduceFrac(a, b) {
+  let x = Math.abs(a), y = Math.abs(b);
+  while (y) { [x, y] = [y, x % y]; }
+  return { num: a / x, den: b / x };
+}
+
+function fracEq(f1, f2) {
+  return f1.num === f2.num && f1.den === f2.den;
+}
+
+function setPreset(v) {
+  const map = {
+    g1: { mul: false, div: false, bracket: false, subNeg: false, divRem: false, frac: false, decimal: false, cmp: true, noZero: true, max: 20, sum: 20 },
+    g2: { mul: true, div: true, bracket: false, subNeg: false, divRem: false, frac: false, decimal: false, cmp: true, noZero: true, max: 100, sum: 100, mul: 81 },
+    g3: { mul: true, div: true, bracket: true, subNeg: false, divRem: true, frac: false, decimal: false, cmp: true, noZero: true, max: 100, sum: 200, mul: 100 },
+    g4: { mul: true, div: true, bracket: true, subNeg: true, divRem: true, frac: true, decimal: true, cmp: true, noZero: false, max: 20, sum: 999, mul: 999 }
+  };
+
+  if (v === "custom") return;
+
+  const d = map[v];
+  $("#cfgMul").checked = d.mul;
+  $("#cfgDiv").checked = d.div;
+  $("#cfgBracket").checked = d.bracket;
+  $("#cfgSubNeg").checked = d.subNeg;
+  $("#cfgDivRem").checked = d.divRem;
+  $("#cfgFrac").checked = d.frac;
+  $("#cfgDecimal").checked = d.decimal;
+  $("#cfgCmp").checked = d.cmp;
+  $("#cfgNoZero").checked = d.noZero;
+  $("#maxNum").value = d.max;
+  $("#sumMax").value = d.sum;
+  $("#mulMax").value = d.mul || 999;
+}
+
+function calcSimple(a, op, b, subNeg, divRem) {
+  if (op === "+") return a + b;
+  if (op === "-") {
+    let v = a - b;
+    if (!subNeg && v < 0) return null;
+    return v;
+  }
+  if (op === "×") return a * b;
+  if (op === "÷") {
+    if (b === 0) return null;
+    if (divRem) return { rem: true, q: Math.floor(a / b), r: a % b, div: b };
+    if (a % b !== 0) return null;
+    return a / b;
+  }
+  if (op === ">") return a > b;
+  if (op === "<") return a < b;
+  if (op === "=") return a === b;
+  return null;
+}
+
+function genOne(max, sumMax, mulMax, opts) {
+  const { mul, div, bracket, subNeg, divRem, frac, decimal, cmp, noZero } = opts;
+  let expr, ans, key, typeTag;
+
+  for (let r = 0; r < 500; r++) {
+    if (cmp && Math.random() < 0.22) {
+      let a = rand(1, max), b = rand(1, max);
+      const ops = ["<", ">", "="];
+      let op = ops[rand(0, 2)];
+      expr = `${a} ${op} ${b}`;
+      ans = { isCmp: true, val: op === ">" ? a > b : op === "<" ? a < b : a === b };
+      key = expr;
+      typeTag = "cmp";
+    } else if (frac && Math.random() < 0.22) {
+      let a1 = rand(1, max), a2 = rand(2, max), b1 = rand(1, max), b2 = rand(2, max);
+      let op = Math.random() > 0.5 ? "+" : "-";
+      let rn = op === "+" ? a1 * b2 + b1 * a2 : a1 * b2 - b1 * a2;
+      let rd = a2 * b2;
+      if (!subNeg && rn < 0) continue;
+      const fr = reduceFrac(rn, rd);
+      expr = `${a1}/${a2} ${op} ${b1}/${b2}`;
+      ans = { isFrac: true, ...fr };
+      key = expr;
+      typeTag = "frac";
+    } else if (decimal && Math.random() < 0.22) {
+      let a = rand(1, max) + rand(0, 9) / 10;
+      let b = rand(1, max) + rand(0, 9) / 10;
+      const ops = ["+", "-"];
+      if (mul) ops.push("×");
+      if (div) ops.push("÷");
+      let op = ops[rand(0, ops.length - 1)];
+      let v = calcSimple(a, op, b, subNeg, divRem);
+      if (v === null) continue;
+      expr = `${a.toFixed(1)} ${op} ${b.toFixed(1)}`;
+      ans = { isDec: true, val: v };
+      key = expr;
+      typeTag = "decimal";
+    } else if (bracket) {
+      let n1 = rand(1, max), n2 = rand(1, max), n3 = rand(1, max);
+      const ops = ["+", "-"];
+      if (mul) ops.push("×");
+      if (div) ops.push("÷");
+      let op1 = ops[rand(0, ops.length - 1)];
+      let op2 = ops[rand(0, ops.length - 1)];
+      let v1 = calcSimple(n1, op1, n2, subNeg, divRem);
+      if (v1 === null) continue;
+      let v2 = calcSimple(v1, op2, n3, subNeg, divRem);
+      if (v2 === null) continue;
+      expr = `(${n1} ${op1} ${n2}) ${op2} ${n3}`;
+      ans = { isNum: true, val: v2 };
+      key = expr;
+      typeTag = "bracket";
+    } else {
+      const ops = ["+", "-"];
+      if (mul) ops.push("×");
+      if (div) ops.push("÷");
+      let op = ops[rand(0, ops.length - 1)];
+      let a, b, val;
+
+      if (op === "+") {
+        a = rand(1, max);
+        b = rand(1, max);
+        val = a + b;
+        if (val > sumMax) continue;
+        typeTag = "add";
+      } else if (op === "-") {
+        a = rand(1, max);
+        b = subNeg ? rand(1, max) : rand(1, a);
+        val = a - b;
+        typeTag = "sub";
+      } else if (op === "×") {
+        a = rand(1, max);
+        b = rand(1, max);
+        val = a * b;
+        if (val > mulMax) continue;
+        typeTag = "mul";
+      } else if (op === "÷") {
+        if (divRem) {
+          a = rand(1, max * 3);
+          b = rand(2, max);
+          val = { rem: true, q: Math.floor(a / b), r: a % b, div: b };
+          typeTag = "div";
+        } else {
+          b = rand(1, max);
+          let q = rand(1, max);
+          a = b * q;
+          val = q;
+          typeTag = "div";
+        }
+      }
+
+      expr = `${a} ${op} ${b}`;
+      ans = { isNum: true, val };
+      key = expr;
+    }
+
+    if (noZero && /[0]/.test(expr)) continue;
+    if (!state.usedKeySet.has(key)) {
+      state.usedKeySet.add(key);
+      return { expr, ans, key, typeTag };
+    }
+  }
+
+  return null;
+}
+
+function checkAnswer(q, inputStr) {
+  const s = inputStr.trim();
+  if (s === "") return null;
+
+  if (q.ans.isCmp) {
+    return s === ">" || s === "<" || s === "="
+      ? (s === ">" ? q.ans.val === true && q.expr.includes(">")
+        : s === "<" ? q.ans.val === true && q.expr.includes("<")
+        : q.ans.val === true)
+      : false;
+  }
+
+  if (q.ans.isFrac) {
+    let sp = s.split("/");
+    if (sp.length !== 2) return false;
+    let nu = Number(sp[0]), de = Number(sp[1]);
+    if (de === 0) return false;
+    return fracEq(reduceFrac(nu, de), q.ans);
+  }
+
+  if (q.ans.isDec || q.ans.isNum) {
+    if (q.ans.val?.rem) {
+      let m = s.match(/(\d+)\s*余\s*(\d+)/);
+      return m ? Number(m[1]) === q.ans.val.q && Number(m[2]) === q.ans.val.r : false;
+    }
+    return Math.abs(Number(s) - q.ans.val) < 1e-6;
+  }
+
+  return false;
+}
+
+function render() {
+  const box = $("#questionBox");
+
+  if (state.isPk) {
+    box.innerHTML = `
+      <div class="pk-wrap">
+        <div class="pk-col"><h3>${$("#p1name").value}</h3>${renderPlayer(1)}</div>
+        <div class="pk-col"><h3>${$("#p2name").value}</h3>${renderPlayer(2)}</div>
+      </div>`;
+  } else {
+    let html = "";
+    state.questionList.forEach((q, i) => {
+      let mark = "";
+      if (q.ok === true) mark = `<span class="ok">✓</span>`;
+      else if (q.ok === false) mark = `<span class="err">✗</span>`;
+      else if (q.ok === "skip") mark = `<span class="skip">跳过</span>`;
+
+      let aText = getAnsText(q.ans);
+      html += `<div class="item">
+        ${q.expr} = <input class="inp" data-idx="${i}" value="${q.user || ""}">
+        ${mark}
+        <span class="answer">标准答案：${aText}</span>
+      </div>`;
+    });
+    box.innerHTML = html;
+    bindInput($$(".inp"), 0);
+  }
+
+  $$(".answer").forEach(e => e.classList.toggle("show", state.showAnswer));
+}
+
+function renderPlayer(pid) {
+  const p = pid === 1 ? state.p1 : state.p2;
+  let html = "";
+
+  state.questionList.forEach((q, i) => {
+    let mark = "";
+    if (p.ok[i] === true) mark = `<span class="ok">✓</span>`;
+    else if (p.ok[i] === false) mark = `<span class="err">✗</span>`;
+    else if (p.ok[i] === "skip") mark = `<span class="skip">跳过</span>`;
+
+    let aText = getAnsText(q.ans);
+    html += `<div class="item">
+      ${q.expr} = <input class="inp pk-inp" data-idx="${i}" data-p="${pid}" value="${p.ans[i] || ""}">
+      ${mark}
+      <span class="answer">标准答案：${aText}</span>
+    </div>`;
+  });
+
+  bindInput($$(".pk-inp"), pid);
+  return html;
+}
+
+function bindInput(list, pid) {
+  list.forEach(inp => {
+    inp.onblur = () => submitOne(inp);
+    inp.onkeydown = e => {
+      if (e.key === "Enter") {
+        submitOne(inp);
+        const arr = Array.from(list);
+        let next = arr.find(x =>
+          Number(x.dataset.idx) === Number(inp.dataset.idx) + 1 &&
+          x.dataset.p === (pid || inp.dataset.p)
+        );
+        if (next) next.focus();
+      }
+    };
+  });
+}
+
+function getAnsText(ans) {
+  if (ans.isCmp) return ans.val ? "正确" : "错误";
+  if (ans.isFrac) return `${ans.num}/${ans.den}`;
+  if (ans.isDec || ans.isNum) {
+    if (ans.val?.rem) return `${ans.val.q}余${ans.val.r}`;
+    return ans.val;
+  }
+  return "";
+}
+
+function submitOne(inp) {
+  const i = Number(inp.dataset.idx);
+  const p = inp.dataset.p ? Number(inp.dataset.p) : 0;
+  const val = inp.value.trim();
+  const q = state.questionList[i];
+  const res = checkAnswer(q, val);
+
+  if (p === 0) {
+    q.user = val;
+    q.ok = res;
+
+    if (res === true) {
+      saveData.totalRight++;
+      saveData.star += 1;
+      saveData.tag[q.typeTag]++;
+    } else if (res === false) {
+      saveData.totalWrongFix++;
+      saveData.wrong.push(q);
+    } else if (val === "skip") {
+      q.ok = "skip";
+    }
+  } else {
+    const player = p === 1 ? state.p1 : state.p2;
+    player.ans[i] = val;
+    player.ok[i] = res;
+
+    if (res === true) {
+      player.right++;
+      saveData.star += 2;
+      saveData.totalRight++;
+      saveData.tag[q.typeTag]++;
+    } else if (res === false) {
+      player.wrong++;
+      saveData.totalWrongFix++;
+      saveData.wrong.push(q);
+    } else if (val === "skip") {
+      player.skip++;
+    }
+
+    checkPkFinish();
+  }
+
+  checkAch();
+  save();
+  render();
+  updateScore();
+}
+
+function checkPkFinish() {
+  const total = state.questionList.length;
+  const p1Done = state.p1.ok.filter(x => x !== null).length;
+  const p2Done = state.p2.ok.filter(x => x !== null).length;
+
+  if ($("#pkMode").value === "speed") {
+    if (!state.p1.finish && p1Done === total) state.p1.finish = true;
+    if (!state.p2.finish && p2Done === total) state.p2.finish = true;
+    if (state.p1.finish || state.p2.finish) showPkResult();
+  }
+}
+
+function showPkResult() {
+  clearInterval(state.timerId);
+  clearInterval(state.timeLimitTimer);
+  saveData.ach.pkFirst = true;
+
+  const p1 = state.p1, p2 = state.p2;
+  const total = state.questionList.length;
+  const r1 = total ? Math.round(p1.right / total * 100) : 0;
+  const r2 = total ? Math.round(p2.right / total * 100) : 0;
+
+  let win = "平局";
+  if (r1 > r2) {
+    win = $("#p1name").value;
+    saveData.pkWinStreak++;
+  } else if (r2 > r1) {
+    win = $("#p2name").value;
+    saveData.pkWinStreak++;
+  } else {
+    saveData.pkWinStreak = 0;
+  }
+
+  $("#pkResultText").innerHTML = `
+    ${$("#p1name").value}：答对 ${p1.right}｜答错 ${p1.wrong}｜跳过 ${p1.skip}｜正确率 ${r1}%<br>
+    ${$("#p2name").value}：答对 ${p2.right}｜答错 ${p2.wrong}｜跳过 ${p2.skip}｜正确率 ${r2}%<br>
+    <h3>🎉 获胜：${win}</h3>`;
+
+  openModal("pkResultModal");
+  save();
+  checkAch();
+}
+
+function updateScore() {
+  if (state.isPk) return;
+
+  const list = state.questionList;
+  let r = 0, w = 0, s = 0;
+
+  list.forEach(q => {
+    if (q.ok === true) r++;
+    else if (q.ok === false) w++;
+    else if (q.ok === "skip") s++;
+  });
+
+  const sc = list.length ? Math.round(r / list.length * 100) : 0;
+  $("#scoreText").innerText = `总题：${list.length}｜对：${r}｜错：${w}｜跳过：${s}｜得分：${sc}分`;
+
+  if (list.length > 0 && r === list.length && !saveData.ach.fullOnce) {
+    saveData.ach.fullOnce = true;
+    save();
+  }
+}
+
+function checkAch() {
+  ACH_DEF.forEach(a => {
+    if (!saveData.ach[a.id] && a.cond()) {
+      saveData.ach[a.id] = Date.now();
+      alert(`🎉 解锁成就【${a.name}】`);
+      save();
+    }
+  });
+}
+
+function renderAchShop() {
+  $("#starCount").innerText = saveData.star;
+
+  let aHtml = "";
+  ACH_DEF.forEach(a => {
+    const un = saveData.ach[a.id];
+    aHtml += `<div class="ach-item ${un ? 'ach-unlock' : 'ach-lock'}">
+      ${a.name}：${a.desc}
+      ${un ? "✅ 解锁：" + new Date(un).toLocaleString() : "🔒 未解锁"}
+    </div>`;
+  });
+  $("#achList").innerHTML = aHtml;
+
+  let sHtml = "";
+  SHOP_DEF.forEach(s => {
+    const owned = saveData.shop[s.id];
+    sHtml += `<div class="shop-item">
+      <span>${s.name}【${s.cost}星】${owned ? "✅ 已拥有" : ""}</span>
+      ${owned ? "" : `<button class="btn-orange" onclick="buyShop('${s.id}',${s.cost})">购买</button>`}
+    </div>`;
+  });
+  $("#shopList").innerHTML = sHtml;
+}
+
+function buyShop(id, cost) {
+  if (saveData.star < cost) return alert("星星不足哦，继续加油做题吧！");
+  saveData.star -= cost;
+  saveData.shop[id] = true;
+  save();
+  applyShop();
+  renderAchShop();
+}
+
+function applyShop() {
+  document.body.classList.toggle("font-big", saveData.shop.bigFont);
+  document.body.classList.toggle("cute-border", saveData.shop.cuteBorder);
+}
+
+function resetAch() {
+  if (!confirm("确定重置星星和成就吗？")) return;
+  saveData.star = 0;
+  saveData.ach = {};
+  saveData.pkWinStreak = 0;
+  save();
+  renderAchShop();
+}
+
+function genWrongPaper() {
+  const pool = saveData.wrong;
+  if (pool.length === 0) return alert("错题本为空，继续加油！");
+
+  state.questionList = [];
+  state.usedKeySet.clear();
+  const cnt = Math.min(Number($("#count").value), pool.length);
+
+  for (let i = 0; i < cnt; i++) {
+    state.questionList.push(pool[i]);
+  }
+
+  state.isPk = false;
+  render();
+  updateScore();
+  closeModal("wrongModal");
+}
+
+function clearWrong() {
+  if (!confirm("确定清空错题本吗？")) return;
+  saveData.wrong = [];
+  save();
+  renderAchShop();
+}
+
+function clearHistory() {
+  if (!confirm("确定清空练习历史吗？")) return;
+  saveData.history = [];
+  save();
+}
+
+function saveHistory() {
+  const t = new Date().toLocaleString();
+  const list = state.questionList;
+  let r = 0, w = 0, s = 0;
+
+  list.forEach(q => {
+    if (q.ok === true) r++;
+    else if (q.ok === false) w++;
+    else if (q.ok === "skip") s++;
+  });
+
+  saveData.history.push({
+    time: t,
+    total: list.length,
+    right: r,
+    wrong: w,
+    skip: s,
+    score: list.length ? Math.round(r / list.length * 100) : 0
+  });
+
+  saveData.totalPractice++;
+  save();
+  checkAch();
+}
+
+$("#genBtn").onclick = () => {
+  setPreset($("#preset").value);
+
+  const opts = {
+    mul: $("#cfgMul").checked,
+    div: $("#cfgDiv").checked,
+    bracket: $("#cfgBracket").checked,
+    subNeg: $("#cfgSubNeg").checked,
+    divRem: $("#cfgDivRem").checked,
+    frac: $("#cfgFrac").checked,
+    decimal: $("#cfgDecimal").checked,
+    cmp: $("#cfgCmp").checked,
+    noZero: $("#cfgNoZero").checked
+  };
+
+  const max = Number($("#maxNum").value);
+  const sumMax = Number($("#sumMax").value);
+  const mulMax = Number($("#mulMax").value);
+  const cnt = Number($("#count").value);
+
+  state.questionList = [];
+  state.usedKeySet.clear();
+  state.isPk = $("#cfgPk").checked;
+
+  state.p1 = { ans: [], ok: [], finish: false, right: 0, wrong: 0, skip: 0 };
+  state.p2 = { ans: [], ok: [], finish: false, right: 0, wrong: 0, skip: 0 };
+
+  for (let i = 0; i < cnt; i++) {
+    const q = genOne(max, sumMax, mulMax, opts);
+    if (!q) continue;
+    state.questionList.push({
+      expr: q.expr,
+      ans: q.ans,
+      key: q.key,
+      typeTag: q.typeTag,
+      user: "",
+      ok: null
+    });
+  }
+
+  state.showAnswer = false;
+  clearInterval(state.timerId);
+  clearInterval(state.timeLimitTimer);
+  state.timerId = null;
+  state.time = 0;
+  $("#time").innerText = "00:00";
+
+  if (Number($("#timeLimit").value) > 0) {
+    const lim = Number($("#timeLimit").value) * 60;
+    state.timeLimitTimer = setInterval(() => {
+      state.time++;
+      if (state.time >= lim) {
+        clearInterval(state.timeLimitTimer);
+        alert("⏰ 限时结束！");
+        if (state.isPk) showPkResult();
+      }
+    }, 1000);
+  }
+
+  render();
+  updateScore();
+};
+
+$("#startTimer").onclick = () => {
+  if (state.timerId) {
+    clearInterval(state.timerId);
+    state.timerId = null;
+    $("#time").innerText = "00:00";
+    return;
+  }
+
+  state.startTime = Date.now();
+  state.timerId = setInterval(() => {
+    const s = Math.floor((Date.now() - state.startTime) / 1000);
+    const m = String(Math.floor(s / 60)).padStart(2, "0");
+    const sec = String(s % 60).padStart(2, "0");
+    $("#time").innerText = `${m}:${sec}`;
+  }, 1000);
+};
+
+$("#cfgPk").onchange = () => {
+  $("#pkCfg").style.display = $("#cfgPk").checked ? "flex" : "none";
+};
+
+$("#preset").onchange = () => {
+  setPreset($("#preset").value);
+};
+
+$("#showAnsBtn").onclick = () => {
+  state.showAnswer = !state.showAnswer;
+  render();
+};
+
+$("#clearAnswerBtn").onclick = () => {
+  state.questionList.forEach(q => {
+    q.user = "";
+    q.ok = null;
+  });
+
+  state.p1 = { ans: [], ok: [], finish: false, right: 0, wrong: 0, skip: 0 };
+  state.p2 = { ans: [], ok: [], finish: false, right: 0, wrong: 0, skip: 0 };
+
+  render();
+  updateScore();
+};
+
+$("#resetBtn").onclick = () => {
+  state.questionList = [];
+  state.isPk = false;
+  state.usedKeySet.clear();
+
+  clearInterval(state.timerId);
+  clearInterval(state.timeLimitTimer);
+  state.timerId = null;
+  state.timeLimitTimer = null;
+
+  $("#time").innerText = "00:00";
+  $("#scoreText").innerText = "等待生成题目...";
+  $("#questionBox").innerHTML = "";
+};
+
+$("#printBtn").onclick = () => {
+  window.print();
+};
+
+$("#achBtn").onclick = () => {
+  renderAchShop();
+  openModal("achModal");
+};
+
+$("#wrongBtn").onclick = () => {
+  let html = "";
+  saveData.wrong.forEach((w, i) => {
+    html += `<div style="padding:8px;border-bottom:2px dashed #ffd6ef">${w.expr} = ${getAnsText(w.ans)}</div>`;
+  });
+  $("#wrongList").innerHTML = html || "<p>暂无错题，太棒啦！</p>";
+  openModal("wrongModal");
+};
+
+$("#historyBtn").onclick = () => {
+  let html = "";
+  saveData.history.slice(-20).forEach(h => {
+    html += `<div style="padding:8px;border-bottom:2px dashed #ffd6ef">
+      ${h.time}｜总题 ${h.total}｜对 ${h.right}｜错 ${h.wrong}｜得分 ${h.score}
+    </div>`;
+  });
+  $("#historyList").innerHTML = html || "<p>暂无练习记录</p>";
+  openModal("historyModal");
+};
+
+$("#themeBtn").onclick = () => {
+  saveData.cfg.dark = !saveData.cfg.dark;
+  save();
+  applyTheme();
+};
+
+function applyTheme() {
+  document.body.classList.toggle("dark", saveData.cfg.dark);
+}
+
+function loadCfg() {
+  $("#cfgMul").checked = saveData.cfg.mul;
+  $("#cfgDiv").checked = saveData.cfg.div;
+  $("#cfgBracket").checked = saveData.cfg.bracket;
+  $("#cfgSubNeg").checked = saveData.cfg.subNeg;
+  $("#cfgDivRem").checked = saveData.cfg.divRem;
+  $("#cfgFrac").checked = saveData.cfg.frac;
+  $("#cfgDecimal").checked = saveData.cfg.decimal;
+  $("#cfgCmp").checked = saveData.cfg.cmp;
+  $("#cfgNoZero").checked = saveData.cfg.noZero;
+  $("#cfgTip").checked = saveData.cfg.tip;
+
+  applyTheme();
+  applyShop();
+}
+
+loadCfg();
+
+$$(".cfg-row input").forEach(e => {
+  e.onchange = () => {
+    saveData.cfg[e.id.replace("cfg", "").toLowerCase()] = e.checked;
+    save();
+  };
+});
+</script>
+
+</body>
+</html>
